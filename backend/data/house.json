@@ -1,0 +1,50 @@
+[
+    {
+        "name": "Celestial Towers",
+        "price": "350000",
+        "address": "Celestial Towers, Jalan Sultan Ismail, 50450 Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur",
+        "city": "Kuala Lumpur",
+        "state": "Wilayah Persekutuan Kuala Lumpur",
+        "country": "Malaysia",
+        "district": "Kuala",
+        "features": [
+            "Air Conditioning",
+            "Balcony",
+            "Cable TV",
+            "Gym",
+            "Internet",
+            "Laundry Room",
+            "Parking",
+            "Pool",
+            "Security",
+            "Sewer",
+            "Smoking Allowed",
+            "Tennis Court",
+            "Wifi"
+        ]
+    },
+    {
+        "name": "Celestial Towers 2",
+        "price": "450000",
+        "address": "Celestial Towers, Jalan Sultan Ismail, 60450 Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur",
+        "city": "Kuala Lumpur",
+        "state": "Wilayah Persekutuan Kuala Lumpur",
+        "country": "Malaysia",
+        "district": "Kuala",
+        "features": [
+            "Air Conditioning",
+            "Balcony",
+            "Laptops",
+            "Gym",
+            "Internet",
+            "Laundry Room",
+            "Parking",
+            "Pool",
+            "Security",
+            "Sewer",
+            "Smoking Allowed",
+            "Tennis Court",
+            "Wifi"
+        ]
+    }
+]
