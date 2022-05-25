@@ -5,6 +5,8 @@ const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
 const sendToken = require('../utils/jwtToken');
 const sendEmail = require('../utils/sendEmail');
 
+const crypto = require('crypto');
+
 // Register a user => /api/v1/register
 exports.registerUser = catchAsyncErrors(async(req, res, next) => {
 
@@ -92,6 +94,93 @@ exports.forgotPassword = catchAsyncErrors(async(req, res, next) => {
         return next(new ErrorHandler(error.message, 500));
     }
 
+})
+
+// Reset password => /api/v1/password/reset/:token
+exports.resetPassword = catchAsyncErrors(async(req, res, next) => {
+
+    // Hash the url token
+    const resetPasswordToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+    // Find user by token
+    const user = await User.findOne({
+        resetPasswordToken,
+        resetPasswordExpire: { $gt: Date.now() }
+    })
+
+    if(!user) {
+        return next(new ErrorHandler('Invalid token', 400));
+    }
+
+    if(req.body.password !== req.body.confirmPassword) {
+        return next(new ErrorHandler('Passwords do not match', 400));
+    }
+
+    // Set new password
+    user.password = req.body.password;
+
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    sendToken(user, 200, res);
+
+})
+
+// Get currently logged in user => /api/v1/me
+exports.getUserProfile = catchAsyncErrors(async(req, res, next) => {
+    
+        const user = await User.findById(req.user.id);
+    
+        res.status(200).json({
+            success: true,
+            user
+        })
+    
+})
+
+// Update/Change password => /api/v1/password/update
+exports.updatePassword = catchAsyncErrors(async(req, res, next) => {
+    
+    const user = await User.findById(req.user.id).select('+password');
+
+    // check previous user password
+    const isPasswordMatched = await user.matchPassword(req.body.oldPassword);
+    
+    if(!isPasswordMatched) {
+        return next(new ErrorHandler('Old password is wrong', 401));
+    }
+
+    user.password = req.body.password;
+    await user.save();
+
+    sendToken(user, 200, res);
+
+})
+
+// Update user profile => /api/v1/me/update
+exports.updateUserProfile = catchAsyncErrors(async(req, res, next) => {
+        
+        const newUserData = {
+            name: req.body.name,
+            email: req.body.email,
+
+        }
+
+        //Update avatar: TODO
+
+        const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+            new: true,
+            runValidators: true,
+            useFindAndModify: false
+        })
+    
+        res.status(200).json({
+            success: true,
+            user
+        })
+    
 })
 
 
